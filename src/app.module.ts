@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config'; // Import ConfigModule
 
 @Module({
   imports: [
+    ConfigModule.forRoot(), // Import ConfigModule here
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -19,7 +20,8 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     AuthModule,
   ],
+
   controllers: [],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
