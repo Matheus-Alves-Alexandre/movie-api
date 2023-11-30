@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
+import { User } from './user/entity/user.entity';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config'; // Import ConfigModule
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Import ConfigModule here
+    ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -20,7 +24,6 @@ import { ConfigModule } from '@nestjs/config'; // Import ConfigModule
     UserModule,
     AuthModule,
   ],
-
   controllers: [],
   providers: [],
 })

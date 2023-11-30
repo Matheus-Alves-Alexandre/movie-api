@@ -1,9 +1,22 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { HttpStatus, ValidationError, ValidationPipe } from '@nestjs/common';
-
+import { ClassSerializerInterceptor, HttpStatus, ValidationError, ValidationPipe } from '@nestjs/common';
+import { useContainer } from 'class-validator';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  //exlude routes
+
+  const reflector = app.get(Reflector);
+
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+
+  // useContainer
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true })
+
+  // implement pipes validation
+
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => {
@@ -23,6 +36,7 @@ async function bootstrap() {
       },
     }),
   );
+
   await app.listen(3000);
 }
 bootstrap();
